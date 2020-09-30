@@ -1,0 +1,22 @@
+﻿version: '3.8'
+services: 
+    cpachecomysql:
+        image: "mysql:5.7"
+        environment:
+            MYSQL_ROOT_PASSWORD: "cp@checo"        
+        ports:
+            - "3306:3306"
+        volumes:
+            - ../data/MySql:/var/lib/mysql
+            - ./create_data_base.sql:/docker-entrypoint-initdb.d/create_data_base.sql
+    cpachecoapi:
+        build: .
+        depends_on: 
+            - cpachecomysql
+        environment: 
+            ServerName: "cpachecomysql"
+            Database: "userdb"
+            UserName: "cpacheco"
+            Password: "cp@checo"
+        ports: 
+            - "5000:80"
