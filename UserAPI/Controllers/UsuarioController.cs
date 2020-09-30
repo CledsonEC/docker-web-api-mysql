@@ -14,6 +14,7 @@ namespace UserAPI.Controllers
         {
             _usuarioRepository = usuarioRepository;
         }
+
         [HttpGet]
         [Produces(typeof(Usuario))]
         public IActionResult Get()

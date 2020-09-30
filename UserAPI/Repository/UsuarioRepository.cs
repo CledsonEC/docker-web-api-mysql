@@ -1,23 +1,21 @@
-﻿using Dapper;
-using MySqlConnector;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UserAPI.Context;
 using UserAPI.Model;
 
 namespace UserAPI.Repository
 {
     public class UsuarioRepository : IUsuarioRepository
     {
-        private readonly string _connectionString;
-        public UsuarioRepository(string connectionString)
+        private readonly UsuarioDbContext _usuarioDbContext;
+
+        public UsuarioRepository(UsuarioDbContext usuarioDbContext)
         {
-            _connectionString = connectionString;   // Injetando a string de conexão no construtor da classe
+            this._usuarioDbContext = usuarioDbContext;
         }
         public IEnumerable<Usuario> GetAll()
         {
-            using (MySqlConnection connection = new MySqlConnection(_connectionString))
-            {
-                return connection.Query<Usuario>("SELECT Codigo, Nome FROM Usuario ORDER BY Nome ASC");
-            }
+            return _usuarioDbContext.Usuarios.ToList();
         }
     }
 }

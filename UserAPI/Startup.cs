@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using UserAPI.Context;
 using UserAPI.Repository;
 
 namespace UserAPI
@@ -21,11 +23,10 @@ namespace UserAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            var server = Configuration["ServerName"];
-            var port = "1433";
-            var database = Configuration["Database"];
-            var user = Configuration["UserName"];
-            var password = Configuration["Password"];
+            var server = Configuration["ServerName"] ?? "localhost";
+            var database = Configuration["Database"] ?? "userdb";
+            var user = Configuration["UserName"] ?? "cpacheco";
+            var password = Configuration["Password"] ?? "cp@checo";
             Console.WriteLine("#######################################################");
             Console.WriteLine($"server: {server}");
             Console.WriteLine($"database: {database}");
@@ -44,14 +45,11 @@ namespace UserAPI
 
             var mySqlDbConnection = $"server={server};port=3306;database={database};user id={user};password={password}";
 
-            Console.WriteLine("#######################################################");
-            Console.WriteLine($"mySqlDbConnection: {mySqlDbConnection}");
-            Console.WriteLine("#######################################################");
+            services.AddDbContext<UsuarioDbContext>(options =>
+                   options.UseMySql(mySqlDbConnection)
+                );
 
-            services.AddScoped<IUsuarioRepository>(factory => {
-                return new UsuarioRepository(mySqlDbConnection);
-            });
-
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
         }
 
